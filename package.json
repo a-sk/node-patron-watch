@@ -1,0 +1,20 @@
+{
+  "name": "patron-watch",
+  "version": "0.0.1",
+  "description": "patron watch plugin",
+  "keywords": ["proxy", "reverse", "http", "watch"],
+  "author": "ask <a.skurihin@gmail.com>",
+  "dependencies": {
+      "patron": "*",
+      "chokidar": "*"
+  },
+  "devDependencies": {
+      "tap": "*",
+      "request": "*",
+      "debug": "*"
+  },
+  "scripts": {
+      "test": "tap test/*.js"
+  },
+  "main": "index"
+}
