@@ -8,7 +8,9 @@
 # Example
 
 ```javascript
-var createProxyServer = require('patron');
+var createProxyServer = require('patron')
+  , watcher = require('patron-watch');
+
 var proxy = createProxyServer(proxyTable);
 
 proxy.use(watcher('path/to/dir/or/file'))
