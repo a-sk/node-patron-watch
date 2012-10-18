@@ -7,7 +7,7 @@
 
 # Example
 
-``javascript
+```javascript
 var createProxyServer = require('patron');
 var proxy = createProxyServer(proxyTable);
 
