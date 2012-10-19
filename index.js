@@ -10,7 +10,7 @@ try {
 
 function createWatcher(path) {
 
-  var watcher = chokidar.watch(path, {persistent: true});
+  var watcher = chokidar.watch(path, {ignored: /^\./, persistent: true});
 
   // add modify and delete events
   watcher.on('change', function(path) {
