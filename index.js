@@ -1,5 +1,6 @@
 var chokidar = require('chokidar')
-  , fs = require('fs');
+  , fs = require('fs')
+  , os = require('os');
 
 try {
   var debug = require('debug')('patron')
@@ -8,27 +9,8 @@ try {
   var debug = function() {}
 }
 
-function createWatcher(path) {
-
-  var watcher = chokidar.watch(path, {ignored: /^\./, persistent: true});
-
-  // add modify and delete events
-  watcher.on('change', function(path) {
-    if (fs.existsSync(path)) {
-      debug('change %s', path)
-      watcher.emit('modify', path)
-    } else {
-      debug('delete %s', path)
-      watcher.emit('delete', path)
-    }
-  });
-
-  debug('create watcher for %s', path)
-  return watcher
-}
 
 function watcherPlugin(watcher, proxyTable) {
-
 
     // object to assosiate files and rules
     var filesRules = {};
@@ -65,7 +47,7 @@ function watcherPlugin(watcher, proxyTable) {
       watcher.emit('add', path)
     })
 
-    watcher.on('delete', function(path) {
+    watcher.on('unlink', function(path) {
       filesRules[path].forEach(function(ruleName){
         debug('Deleting rule for %s', ruleName)
         proxyTable.emit('remove', ruleName)
@@ -74,6 +56,7 @@ function watcherPlugin(watcher, proxyTable) {
   }
 
 module.exports = function(path) {
-  var watcher = createWatcher(path)
+  var watcher = chokidar.watch(path, {ignored: /^\./, persistent: true});
+  debug('create watcher for %s', path)
   return function(e) {return watcherPlugin(watcher, e)}
 }
