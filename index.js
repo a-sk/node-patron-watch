@@ -1,6 +1,5 @@
 var chokidar = require('chokidar')
-  , fs = require('fs')
-  , os = require('os');
+  , fs = require('fs');
 
 try {
   var debug = require('debug')('patron')
@@ -16,6 +15,7 @@ function watcherPlugin(watcher, proxyTable) {
     var filesRules = {};
 
     watcher.on('add', function(path) {
+      debug('Add event')
       var newProxyRules = require(path)
       // copy properties from newProxyRules to proxyTable
       for (var ruleName in newProxyRules) {
@@ -33,6 +33,8 @@ function watcherPlugin(watcher, proxyTable) {
     })
 
     watcher.on('change', function(path){
+      if (!fs.existsSync(path)) { return }
+      debug('Change event')
       filesRules[path].forEach(function(ruleName) {
         debug('Deleting rule for %s', ruleName)
         proxyTable.emit('remove', ruleName)
@@ -48,6 +50,7 @@ function watcherPlugin(watcher, proxyTable) {
     })
 
     watcher.on('unlink', function(path) {
+      debug('unlink event')
       filesRules[path].forEach(function(ruleName){
         debug('Deleting rule for %s', ruleName)
         proxyTable.emit('remove', ruleName)
@@ -60,3 +63,4 @@ module.exports = function(path) {
   debug('create watcher for %s', path)
   return function(e) {return watcherPlugin(watcher, e)}
 }
+
